@@ -1,7 +1,4 @@
 import { DataSource } from 'typeorm';
-import { SaleEntity } from './src/shared/infra/database/typeorm/entities/SaleEntity';
-import { ProductEntity } from './src/shared/infra/database/typeorm/entities/ProductEntity';
-import { CategoryEntity } from './src/shared/infra/database/typeorm/entities/CategoryEntity';
 
 export default new DataSource({
   type: 'postgres',
@@ -10,8 +7,8 @@ export default new DataSource({
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || 'password',
   database: process.env.DB_DATABASE || 'pdv_db',
-  entities: [CategoryEntity, ProductEntity, SaleEntity],
+  entities: ['src/shared/infra/database/typeorm/entities/*.ts'],
   migrations: ['src/shared/infra/database/typeorm/migrations/*.ts'],
   synchronize: false,
-  logging: false,
+  logging: true,
 });

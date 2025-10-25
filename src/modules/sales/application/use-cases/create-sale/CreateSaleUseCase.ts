@@ -9,6 +9,7 @@ export class CreateSaleUseCase {
     this.validateSaleData(data);
 
     const saleData: Partial<SaleEntity> = {
+      id: crypto.randomUUID(),
       items: data.items,
       total: data.total,
       paymentMethod: data.paymentMethod,

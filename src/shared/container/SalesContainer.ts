@@ -49,8 +49,6 @@ const registerSales = (container: Container) => {
         return new ListSalesUseCase(db);
       });
   }
-
-  // Optional: SalesReport and BulkCancel were advanced features; wire when implemented in application layer
 };
 
 export { registerSales, TYPES };

@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, type Router as ExpressRouter } from 'express';
 import { container, TYPES } from '../../../../../shared/container';
 import { CreateSaleUseCase } from '../../../application/use-cases/create-sale/CreateSaleUseCase';
 import { GetSaleUseCase } from '../../../application/use-cases/get-sale/GetSaleUseCase';
@@ -9,7 +9,7 @@ import { GetSaleController } from '../controllers/GetSaleController';
 import { ListSalesController } from '../controllers/ListSalesController';
 import { CancelSaleController } from '../controllers/CancelSaleController';
 
-const salesRoutes = Router();
+const salesRoutes: ExpressRouter = Router();
 
 salesRoutes.post('/', (req, res) => {
   const useCase = container.get<CreateSaleUseCase>(TYPES.CreateSaleUseCase);

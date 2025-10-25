@@ -1,6 +1,12 @@
 import express from 'express';
+import { DataSource } from 'typeorm';
 import { DatabaseProviderFactory } from '../database';
 import routes from '../routes';
+
+// Extend global interface
+declare global {
+  var getDataSource: () => DataSource;
+}
 
 const app = express();
 const port = process.env.PORT || 3333;
@@ -24,15 +30,11 @@ async function initializeServer() {
       throw new Error('Database connection failed');
     }
 
-    (global as any).getDataSource = () => dataSource;
+    global.getDataSource = () => dataSource;
 
     // Initialize container after DataSource is ready
-    import('../../container').then(({ container }) => {
-      console.log(
-        '🔧 Container initialized with',
-        Object.keys(container).length,
-        'bindings'
-      );
+    import('../../container').then(({ TYPES }) => {
+      console.log('🔧 Container initialized with types:', Object.keys(TYPES));
     });
 
     app.use('/api', routes);

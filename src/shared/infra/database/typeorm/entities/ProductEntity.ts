@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
 } from 'typeorm';
-import { CategoryEntity } from './CategoryEntity';
+import { CategoryEntity } from './CategoryEntity.js';
 
 @Entity('products')
 export class ProductEntity {

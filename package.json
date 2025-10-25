@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/shared/infra/http/server.ts",
+    "dev": "tsx watch src/shared/infra/http/server.ts",
     "build": "tsc",
     "lint": "eslint src/**/*.ts --fix",
     "lint:check": "eslint src/**/*.ts",
@@ -13,7 +13,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,js,json}\"",
     "start": "node dist/shared/infra/http/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "typeorm": "typeorm-ts-node-commonjs -d ormconfig.ts",
+    "typeorm": "tsx --no-cache ./node_modules/typeorm/cli.js -d ormconfig.ts",
     "migration:generate": "npm run typeorm -- migration:generate",
     "migration:run": "npm run typeorm -- migration:run",
     "migration:revert": "npm run typeorm -- migration:revert",
@@ -50,6 +50,8 @@
     "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6"
   }
 }
