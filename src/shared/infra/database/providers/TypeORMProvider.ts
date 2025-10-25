@@ -3,6 +3,7 @@ import { IDataProvider } from './IDataProvider';
 import { SaleEntity } from '../typeorm/entities/SaleEntity';
 import { ProductEntity } from '../typeorm/entities/ProductEntity';
 import { CategoryEntity } from '../typeorm/entities/CategoryEntity';
+import { ClientEntity } from '../typeorm/entities/ClientEntity';
 
 export class TypeORMProvider implements IDataProvider {
   private dataSource: DataSource;
@@ -15,7 +16,7 @@ export class TypeORMProvider implements IDataProvider {
       username: process.env.DB_USERNAME || 'postgres',
       password: process.env.DB_PASSWORD || 'password',
       database: process.env.DB_DATABASE || 'pdv_db',
-      entities: [CategoryEntity, ProductEntity, SaleEntity],
+      entities: [CategoryEntity, ProductEntity, SaleEntity, ClientEntity],
       synchronize: process.env.NODE_ENV === 'development',
       logging: process.env.NODE_ENV === 'development',
       migrations: ['dist/shared/infra/database/typeorm/migrations/*.js'],

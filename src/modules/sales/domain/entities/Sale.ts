@@ -5,6 +5,13 @@ export interface SaleItem {
   quantity: number;
 }
 
+export interface CreateSaleProps {
+  items: SaleItem[];
+  total: number;
+  paymentMethod: string;
+  customerId?: string;
+}
+
 export class Sale {
   id: string;
   items: SaleItem[];
@@ -16,13 +23,17 @@ export class Sale {
   cancelledAt?: Date;
   cancelReason?: string;
 
-  constructor(props: Omit<Sale, 'id' | 'status' | 'createdAt'>) {
+  constructor(props: CreateSaleProps) {
+    // Business rule validations in domain
+    this.validateSaleData(props);
+
+    // Set properties
     this.items = props.items;
     this.total = props.total;
     this.paymentMethod = props.paymentMethod;
     this.customerId = props.customerId;
-    this.cancelledAt = props.cancelledAt;
-    this.cancelReason = props.cancelReason;
+
+    // Auto-generated properties (domain responsibility)
     this.id = crypto.randomUUID();
     this.status = SaleStatus.OPEN;
     this.createdAt = new Date();
@@ -36,5 +47,27 @@ export class Sale {
     this.status = SaleStatus.CANCELLED;
     this.cancelReason = reason;
     this.cancelledAt = new Date();
+  }
+
+  private validateSaleData(data: CreateSaleProps): void {
+    if (!data.items || !Array.isArray(data.items) || data.items.length === 0) {
+      throw new Error('Sale must have at least one item');
+    }
+
+    if (data.total <= 0) {
+      throw new Error('Sale total must be greater than zero');
+    }
+
+    if (!data.paymentMethod || data.paymentMethod.trim() === '') {
+      throw new Error('Payment method is required');
+    }
+
+    for (const item of data.items) {
+      if (!item.productId || !item.quantity || item.quantity <= 0) {
+        throw new Error(
+          'All items must have a valid product ID and positive quantity'
+        );
+      }
+    }
   }
 }

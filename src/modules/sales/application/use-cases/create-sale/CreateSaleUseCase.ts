@@ -1,47 +1,42 @@
-import { IDatabaseService } from '../../../../../shared/infra/database/services/DatabaseService';
-import { SaleEntity } from '../../../../../shared/infra/database/typeorm/entities/SaleEntity';
+import { Sale } from '../../../domain/entities/Sale';
+import { ISaleRepository } from '../../../domain/repositories/ISaleRepository';
+import { IClientQueryService } from '../../../../../shared/domain/services/IClientQueryService';
 import { CreateSaleDTO } from './CreateSaleDTO';
 
 export class CreateSaleUseCase {
-  constructor(private databaseService: IDatabaseService) {}
+  constructor(
+    private saleRepository: ISaleRepository,
+    private clientQueryService: IClientQueryService // 🎯 Dependência da interface compartilhada
+  ) {}
 
-  async execute(data: CreateSaleDTO) {
-    this.validateSaleData(data);
+  async execute(data: CreateSaleDTO): Promise<Sale> {
+    if (data.customerId) {
+      const clientExists = await this.clientQueryService.validateClientExists(
+        data.customerId
+      );
 
-    const saleData: Partial<SaleEntity> = {
-      id: crypto.randomUUID(),
+      if (!clientExists) {
+        throw new Error(`Client with ID ${data.customerId} not found`);
+      }
+
+      const isClientActive = await this.clientQueryService.isClientActive(
+        data.customerId
+      );
+
+      if (!isClientActive) {
+        throw new Error(`Client with ID ${data.customerId} is not active`);
+      }
+    }
+
+    const sale = new Sale({
       items: data.items,
       total: data.total,
       paymentMethod: data.paymentMethod,
       customerId: data.customerId,
-      status: 'OPEN',
-      createdAt: new Date(),
-    };
+    });
 
-    const createdSale = await this.databaseService.sales.save(saleData);
+    const savedSale = await this.saleRepository.save(sale);
 
-    return createdSale;
-  }
-
-  private validateSaleData(data: CreateSaleDTO): void {
-    if (!data.items || !Array.isArray(data.items) || data.items.length === 0) {
-      throw new Error('Sale must have at least one item');
-    }
-
-    if (data.total <= 0) {
-      throw new Error('Sale total must be greater than zero');
-    }
-
-    if (!data.paymentMethod) {
-      throw new Error('Payment method is required');
-    }
-
-    for (const item of data.items) {
-      if (!item.productId || !item.quantity || item.quantity <= 0) {
-        throw new Error(
-          'All items must have a valid product ID and positive quantity'
-        );
-      }
-    }
+    return savedSale;
   }
 }

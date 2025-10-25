@@ -1,9 +1,9 @@
-import { IDatabaseService } from '../../../../../shared/infra/database/services/DatabaseService';
+import { ISaleRepository } from '../../../domain/repositories/ISaleRepository';
 
 export class CancelSaleUseCase {
-  constructor(private databaseService: IDatabaseService) {}
+  constructor(private saleRepository: ISaleRepository) {}
 
-  async execute(id: string, reason: string) {
+  async execute(id: string, reason: string): Promise<void> {
     if (!id) {
       throw new Error('Sale ID is required');
     }
@@ -12,16 +12,7 @@ export class CancelSaleUseCase {
       throw new Error('Cancellation reason is required');
     }
 
-    const sale = await this.databaseService.sales.findById(id);
-
-    if (!sale) {
-      throw new Error(`Sale with ID ${id} not found`);
-    }
-
-    if (sale.status === 'CANCELLED') {
-      throw new Error(`Sale with ID ${id} is already cancelled`);
-    }
-
-    await this.databaseService.sales.cancel(id, reason);
+    // Use repository method which uses domain logic
+    await this.saleRepository.cancel(id, reason);
   }
 }

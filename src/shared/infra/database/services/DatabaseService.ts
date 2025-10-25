@@ -3,22 +3,11 @@ import { SaleEntity } from '../typeorm/entities/SaleEntity';
 // import { ProductEntity } from '../typeorm/entities/ProductEntity';
 // import { CustomerEntity } from '../typeorm/entities/CustomerEntity';
 
-/**
- * 🚀 Database Service - EntityManager ONLY
- *
- * Benefícios desta abordagem:
- * ✅ EntityManager único para todas as operações
- * ✅ Transações simplificadas
- * ✅ Queries customizadas diretas
- * ✅ Zero código boilerplate de InMemory
- * ✅ Performance otimizada
- * ✅ Banco de dados relacional real
- */
-
 export interface IDatabaseService {
   entityManager: EntityManager;
   isConnected(): boolean;
   getInfo(): DatabaseInfo;
+  getDataSource(): DataSource;
 
   // 🔄 Transações
   transaction<T>(work: (manager: EntityManager) => Promise<T>): Promise<T>;
@@ -49,6 +38,10 @@ export class DatabaseService implements IDatabaseService {
 
   get entityManager(): EntityManager {
     return this._entityManager;
+  }
+
+  getDataSource(): DataSource {
+    return this.dataSource;
   }
 
   get sales(): SalesOperations {
