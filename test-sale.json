@@ -1,0 +1,11 @@
+{
+  "items": [
+    {
+      "productId": "123",
+      "quantity": 2
+    }
+  ],
+  "total": 100.50,
+  "paymentMethod": "credit_card",
+  "customerId": "customer-123"
+}
