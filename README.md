@@ -68,7 +68,7 @@ Sistema de Ponto de Venda construído com **Clean Architecture** e princípios *
 1. **Clone o repositório**
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/rssarti/PDV-Delivery
 cd pdv-backend
 ```
 
