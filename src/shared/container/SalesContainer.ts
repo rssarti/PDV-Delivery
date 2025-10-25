@@ -4,7 +4,7 @@ import { GetSaleUseCase } from '../../modules/sales/application/use-cases/get-sa
 import { ListSalesUseCase } from '../../modules/sales/application/use-cases/list-sales/ListSalesUseCase';
 import { CancelSaleUseCase } from '../../modules/sales/application/use-cases/cancel-sale/CancelSaleUseCase';
 import { ISaleRepository } from '../../modules/sales/domain/repositories/ISaleRepository';
-import { TypeORMSaleRepository } from '../../modules/sales/infrastructure/repositories/TypeORMSaleRepository';
+import { TypeORMSaleRepository } from '../../modules/sales/infrastructure/repositories/SaleRepository';
 import { IClientQueryService } from '../../shared/domain/services/IClientQueryService';
 import { TYPES as CORE_TYPES } from './CoreContainer';
 import { DatabaseService } from '../infra/database/services/DatabaseService';
@@ -24,7 +24,6 @@ const TYPES = {
 };
 
 const registerSales = (container: Container) => {
-  // Register Repository Implementation
   if (!container.isBound(TYPES.SaleRepository)) {
     container.bind<ISaleRepository>(TYPES.SaleRepository).toDynamicValue(() => {
       const db = container.get<DatabaseService>(CORE_TYPES.DatabaseService);
@@ -32,7 +31,6 @@ const registerSales = (container: Container) => {
     });
   }
 
-  // Register Use Cases with Dependencies
   if (!container.isBound(TYPES.CreateSaleUseCase)) {
     container
       .bind<CreateSaleUseCase>(TYPES.CreateSaleUseCase)

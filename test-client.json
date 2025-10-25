@@ -1,0 +1,15 @@
+{
+  "name": "João Silva",
+  "email": "joao.silva@example.com",
+  "phone": "11987654321",
+  "address": {
+    "address": "Rua das Flores",
+    "addressNumber": "123",
+    "neighborhood": "Centro",
+    "complement": "Apt 45",
+    "zipCode": "01234567",
+    "latitude": -23.5505,
+    "longitude": -46.6333
+  },
+  "cpf": "12345678901"
+}

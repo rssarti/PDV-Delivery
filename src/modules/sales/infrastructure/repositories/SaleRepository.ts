@@ -7,16 +7,13 @@ export class TypeORMSaleRepository implements ISaleRepository {
   constructor(private databaseService: IDatabaseService) {}
 
   async save(sale: Sale): Promise<Sale> {
-    // Convert Domain Entity → Infrastructure Entity
     const saleEntity = this.domainToEntity(sale);
 
-    // Save using TypeORM repository directly
     const repository = this.databaseService
       .getDataSource()
       .getRepository(SaleEntity);
     const savedEntity = await repository.save(saleEntity);
 
-    // Convert Infrastructure Entity → Domain Entity
     return this.entityToDomain(savedEntity);
   }
 
@@ -67,10 +64,7 @@ export class TypeORMSaleRepository implements ISaleRepository {
       throw new Error('Sale not found');
     }
 
-    // Use domain method for business rules
     sale.cancel(reason);
-
-    // Save updated domain entity
     await this.save(sale);
   }
 
@@ -102,7 +96,6 @@ export class TypeORMSaleRepository implements ISaleRepository {
   }
 
   private entityToDomain(entity: SaleEntity): Sale {
-    // Reconstruct domain entity from persisted data
     const sale = Object.create(Sale.prototype);
     sale.id = entity.id;
     sale.items = entity.items;

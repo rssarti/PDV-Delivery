@@ -1,38 +1,51 @@
+import { randomUUID } from 'crypto';
 import { ClientStatus } from '../enums/ClientStatus';
+import { Address, CreateAddressProps } from '../value-objects/Address';
 
 export interface CreateClientProps {
   name: string;
   email: string;
+  phone: string;
+  address: CreateAddressProps;
+  cpf?: string;
+  cnpj?: string;
+}
+
+export interface UpdateClientProps {
+  name?: string;
+  email?: string;
   phone?: string;
-  document?: string;
-  status?: ClientStatus;
-  createdAt?: Date;
-  updatedAt?: Date;
+  address?: CreateAddressProps;
 }
 
 export class Client {
   private readonly id: string;
   private name: string;
   private email: string;
-  private phone?: string;
-  private document?: string;
+  private phone: string;
+  private address: Address;
+  private readonly cpf?: string;
+  private readonly cnpj?: string;
   private status: ClientStatus;
-  private createdAt: Date;
+  private readonly createdAt: Date;
   private updatedAt: Date;
 
   constructor(props: CreateClientProps, id?: string) {
     this.validateClientData(props);
 
-    this.id = id || crypto.randomUUID();
-    this.name = props.name;
-    this.email = props.email;
-    this.phone = props.phone;
-    this.document = props.document;
-    this.status = props.status || ClientStatus.ACTIVE;
-    this.createdAt = props.createdAt || new Date();
-    this.updatedAt = props.updatedAt || new Date();
+    this.id = id ?? randomUUID();
+    this.name = props.name.trim();
+    this.email = props.email.toLowerCase().trim();
+    this.phone = props.phone.replace(/\D/g, '');
+    this.address = new Address(props.address);
+    this.cpf = props.cpf?.replace(/\D/g, '');
+    this.cnpj = props.cnpj?.replace(/\D/g, '');
+    this.status = ClientStatus.ACTIVE;
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
   }
 
+  // Getters
   getId(): string {
     return this.id;
   }
@@ -45,12 +58,24 @@ export class Client {
     return this.email;
   }
 
-  getPhone(): string | undefined {
+  getPhone(): string {
     return this.phone;
   }
 
+  getAddress(): Address {
+    return this.address;
+  }
+
+  getCpf(): string | undefined {
+    return this.cpf;
+  }
+
+  getCnpj(): string | undefined {
+    return this.cnpj;
+  }
+
   getDocument(): string | undefined {
-    return this.document;
+    return this.cpf || this.cnpj;
   }
 
   getStatus(): ClientStatus {
@@ -65,6 +90,7 @@ export class Client {
     return this.updatedAt;
   }
 
+  // Business Methods
   isActive(): boolean {
     return this.status === ClientStatus.ACTIVE;
   }
@@ -84,9 +110,7 @@ export class Client {
     this.updatedAt = new Date();
   }
 
-  updateInfo(
-    data: Partial<Pick<CreateClientProps, 'name' | 'email' | 'phone'>>
-  ): void {
+  updateInfo(data: UpdateClientProps): void {
     if (data.name) {
       if (!data.name.trim() || data.name.trim().length < 2) {
         throw new Error('Client name must have at least 2 characters');
@@ -98,11 +122,15 @@ export class Client {
       if (!this.isValidEmail(data.email)) {
         throw new Error('Valid email is required');
       }
-      this.email = data.email.toLowerCase();
+      this.email = data.email.toLowerCase().trim();
     }
 
-    if (data.phone !== undefined) {
-      this.phone = data.phone;
+    if (data.phone) {
+      this.phone = data.phone.replace(/\D/g, '');
+    }
+
+    if (data.address) {
+      this.address = new Address(data.address);
     }
 
     this.updatedAt = new Date();
@@ -117,8 +145,20 @@ export class Client {
       throw new Error('Valid email is required');
     }
 
-    if (data.document && data.document.trim().length < 8) {
-      throw new Error('Document must have at least 8 characters when provided');
+    if (!data.phone || data.phone.trim().length < 10) {
+      throw new Error('Phone must have at least 10 digits');
+    }
+
+    if (data.cpf && data.cpf.replace(/\D/g, '').length !== 11) {
+      throw new Error('CPF must have 11 digits when provided');
+    }
+
+    if (data.cnpj && data.cnpj.replace(/\D/g, '').length !== 14) {
+      throw new Error('CNPJ must have 14 digits when provided');
+    }
+
+    if (!data.cpf && !data.cnpj) {
+      throw new Error('Either CPF or CNPJ must be provided');
     }
   }
 

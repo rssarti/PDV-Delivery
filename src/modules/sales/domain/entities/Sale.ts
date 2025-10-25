@@ -24,16 +24,13 @@ export class Sale {
   cancelReason?: string;
 
   constructor(props: CreateSaleProps) {
-    // Business rule validations in domain
     this.validateSaleData(props);
 
-    // Set properties
     this.items = props.items;
     this.total = props.total;
     this.paymentMethod = props.paymentMethod;
     this.customerId = props.customerId;
 
-    // Auto-generated properties (domain responsibility)
     this.id = crypto.randomUUID();
     this.status = SaleStatus.OPEN;
     this.createdAt = new Date();

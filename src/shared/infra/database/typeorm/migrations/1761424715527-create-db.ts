@@ -1,11 +1,17 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateDatabase1761399658448 implements MigrationInterface {
-  name = 'CreateDatabase1761399658448';
+export class CreateDb1761424715527 implements MigrationInterface {
+  name = 'CreateDb1761424715527';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
       `CREATE TABLE "sales" ("id" uuid NOT NULL, "items" jsonb NOT NULL, "total" numeric(10,2) NOT NULL, "paymentMethod" character varying NOT NULL, "customerId" uuid, "status" character varying NOT NULL, "cancelReason" text, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "cancelledAt" TIMESTAMP, "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_4f0bc990ae81dba46da680895ea" PRIMARY KEY ("id"))`
+    );
+    await queryRunner.query(
+      `CREATE TYPE "public"."clients_status_enum" AS ENUM('active', 'inactive', 'suspended')`
+    );
+    await queryRunner.query(
+      `CREATE TABLE "clients" ("id" uuid NOT NULL, "name" character varying(255) NOT NULL, "email" character varying(255) NOT NULL, "phone" character varying(20) NOT NULL, "address" jsonb NOT NULL, "cpf" character varying(11), "cnpj" character varying(14), "status" "public"."clients_status_enum" NOT NULL DEFAULT 'active', "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_b48860677afe62cd96e12659482" UNIQUE ("email"), CONSTRAINT "PK_f1ab7cf3a5714dbc6bb4e1c28a4" PRIMARY KEY ("id"))`
     );
     await queryRunner.query(
       `CREATE TABLE "categories" ("id" uuid NOT NULL, "name" character varying(255) NOT NULL, "description" text, "image" text, "isActive" boolean NOT NULL DEFAULT true, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_24dbc6126a28ff948da33e97d3b" PRIMARY KEY ("id"))`
@@ -24,6 +30,8 @@ export class CreateDatabase1761399658448 implements MigrationInterface {
     );
     await queryRunner.query(`DROP TABLE "products"`);
     await queryRunner.query(`DROP TABLE "categories"`);
+    await queryRunner.query(`DROP TABLE "clients"`);
+    await queryRunner.query(`DROP TYPE "public"."clients_status_enum"`);
     await queryRunner.query(`DROP TABLE "sales"`);
   }
 }
