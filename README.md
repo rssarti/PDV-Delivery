@@ -360,4 +360,4 @@ Se você chegou até aqui, você faz parte desta jornada. Seja contribuindo com 
 ![GitHub issues](https://img.shields.io/github/issues/rssarti/PDV-Delivery)
 ![GitHub license](https://img.shields.io/github/license/rssarti/PDV-Delivery)
 
-**Feito com ❤️ por [Rodrigo Sarti](https://github.com/rssarti)**
+**Feito com ❤️ por [Rafael Sarti](https://github.com/rssarti)**
