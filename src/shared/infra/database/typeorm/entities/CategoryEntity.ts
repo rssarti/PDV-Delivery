@@ -4,18 +4,23 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { ProductEntity } from './ProductEntity.js';
 
 @Entity('categories')
 export class CategoryEntity {
   @PrimaryColumn('uuid')
   id!: string;
 
-  @Column('varchar', { length: 255 })
+  @Column('varchar', { length: 100 })
   name!: string;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { length: 500, nullable: true })
   description?: string;
+
+  @Column('uuid', { nullable: true })
+  parentCategoryId?: string;
 
   @Column('text', { nullable: true })
   image?: string;
@@ -28,4 +33,7 @@ export class CategoryEntity {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @OneToMany(() => ProductEntity, product => product.category)
+  products!: ProductEntity[];
 }

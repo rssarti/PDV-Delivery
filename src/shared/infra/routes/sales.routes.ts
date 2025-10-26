@@ -7,7 +7,7 @@ import {
   ListSalesUseCase,
 } from '../../../modules/sales';
 
-const salesRoutes = Router();
+const salesRoutes: Router = Router();
 
 salesRoutes.post('/', async (req, res) => {
   try {

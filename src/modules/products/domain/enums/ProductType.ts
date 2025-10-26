@@ -1,0 +1,5 @@
+export enum ProductType {
+  INSUMO = 'INSUMO',
+  SEMI_PROCESSADO = 'SEMI_PROCESSADO',
+  PRODUTO_FINAL = 'PRODUTO_FINAL',
+}

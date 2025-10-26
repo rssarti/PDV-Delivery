@@ -136,6 +136,11 @@ export class Client {
     this.updatedAt = new Date();
   }
 
+  updatePrimaryAddress(newAddress: Address): void {
+    this.address = newAddress;
+    this.updatedAt = new Date();
+  }
+
   private validateClientData(data: CreateClientProps): void {
     if (!data.name || data.name.trim().length < 2) {
       throw new Error('Client name must have at least 2 characters');

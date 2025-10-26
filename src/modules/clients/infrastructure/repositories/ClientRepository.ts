@@ -3,6 +3,7 @@ import { IClientRepository } from '../../domain/repositories/IClientRepository';
 import { Client } from '../../domain/entities/Client';
 import { ClientEntity } from '../../../../shared/infra/database/typeorm/entities/ClientEntity';
 import { IDatabaseService } from '../../../../shared/infra/database/services/DatabaseService';
+import { ClientStatus } from '../../domain/enums/ClientStatus';
 
 @injectable()
 export class TypeORMClientRepository implements IClientRepository {
@@ -84,6 +85,7 @@ export class TypeORMClientRepository implements IClientRepository {
       .getDataSource()
       .getRepository(ClientEntity);
     const data = await repository.findOne({ where: { id } });
+    data!.status = ClientStatus.INACTIVE;
     data!.deleted_at = new Date();
     await repository.save(data!);
   }
