@@ -1,42 +1,9 @@
 import { inject, injectable } from 'inversify';
 import { IProductRepository } from '../../../domain/interfaces/IProductRepository';
-import { Product, ProductProps } from '../../../domain/entities/index';
-import {
-  ProductType,
-  UnitType,
-  ProductOrigin,
-  AvailabilityStatus,
-} from '../../../domain/enums/index';
+import { Product, ProductProps } from '../../../domain/entities';
+import { AvailabilityStatus } from '../../../domain/enums';
 import { PRODUCT_TYPES } from '../../../types';
-
-export interface CreateProductRequest {
-  name: string;
-  description?: string;
-  type: ProductType;
-  categoryId: string;
-  baseUnit: UnitType;
-  baseQuantity: number;
-  fractionalUnit?: UnitType;
-  fractionalQuantity?: number;
-  conversionFactor?: number;
-  costPrice: number;
-  salePrice: number;
-  suggestedPrice?: number;
-  ncm?: string;
-  cest?: string;
-  icmsRate?: number;
-  pisRate?: number;
-  cofinsRate?: number;
-  origin: ProductOrigin;
-  eanCode?: string;
-  internalCode?: string;
-  images?: string[];
-  preparationTime?: number;
-  minimumStock?: number;
-  currentStock?: number;
-  canBeIngredient?: boolean;
-  needsRecipe?: boolean;
-}
+import { CreateProductDTO } from './CreateProductDTO';
 
 @injectable()
 export class CreateProductUseCase {
@@ -45,7 +12,7 @@ export class CreateProductUseCase {
     private productRepository: IProductRepository
   ) {}
 
-  async execute(request: CreateProductRequest): Promise<Product> {
+  async execute(request: CreateProductDTO): Promise<Product> {
     await this.validateUniqueFields(request);
 
     const productProps: ProductProps = {
@@ -90,9 +57,7 @@ export class CreateProductUseCase {
     return await this.productRepository.save(product);
   }
 
-  private async validateUniqueFields(
-    request: CreateProductRequest
-  ): Promise<void> {
+  private async validateUniqueFields(request: CreateProductDTO): Promise<void> {
     if (request.internalCode) {
       const existingByInternalCode =
         await this.productRepository.findByInternalCode(request.internalCode);

@@ -9,6 +9,7 @@ export const PRODUCT_TYPES = {
   DeleteProductUseCase: Symbol.for('DeleteProductUseCase'),
   GetProductUseCase: Symbol.for('GetProductUseCase'),
   ListProductsUseCase: Symbol.for('ListProductsUseCase'),
+  SearchProductsUseCase: Symbol.for('SearchProductsUseCase'),
   UpdateStockUseCase: Symbol.for('UpdateStockUseCase'),
   CalculateProductCostUseCase: Symbol.for('CalculateProductCostUseCase'),
 

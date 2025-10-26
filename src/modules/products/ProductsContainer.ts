@@ -8,9 +8,14 @@ import { TypeORMProductRepository } from './infrastructure/repositories/ProductR
 import { TypeORMCategoryRepository } from './infrastructure/repositories/CategoryRepository';
 
 // Use Cases
-import { CreateProductUseCase } from './application/use-cases/create-product/CreateProductUseCase';
-import { UpdateStockUseCase } from './application/use-cases/update-stock/UpdateStockUseCase';
-import { CalculateRecipeCostUseCase } from './application/use-cases/calculate-recipe-cost/CalculateRecipeCostUseCase';
+import {
+  CreateProductUseCase,
+  GetProductUseCase,
+  ListProductsUseCase,
+  SearchProductsUseCase,
+  UpdateStockUseCase,
+  CalculateRecipeCostUseCase,
+} from './application/use-cases/index';
 
 // Controllers
 import { ProductController } from './infrastructure/controllers/ProductController';
@@ -31,6 +36,21 @@ const registerProducts = (container: Container): void => {
   container
     .bind<CreateProductUseCase>(PRODUCT_TYPES.CreateProductUseCase)
     .to(CreateProductUseCase)
+    .inSingletonScope();
+
+  container
+    .bind<GetProductUseCase>(PRODUCT_TYPES.GetProductUseCase)
+    .to(GetProductUseCase)
+    .inSingletonScope();
+
+  container
+    .bind<ListProductsUseCase>(PRODUCT_TYPES.ListProductsUseCase)
+    .to(ListProductsUseCase)
+    .inSingletonScope();
+
+  container
+    .bind<SearchProductsUseCase>(PRODUCT_TYPES.SearchProductsUseCase)
+    .to(SearchProductsUseCase)
     .inSingletonScope();
 
   container

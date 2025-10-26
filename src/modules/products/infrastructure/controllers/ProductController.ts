@@ -1,7 +1,17 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
-import { CreateProductUseCase } from '../../application/use-cases/create-product/CreateProductUseCase';
-import { UpdateStockUseCase } from '../../application/use-cases/update-stock/UpdateStockUseCase';
+import {
+  CreateProductUseCase,
+  GetProductUseCase,
+  ListProductsUseCase,
+  SearchProductsUseCase,
+  UpdateStockUseCase,
+  CreateProductDTO,
+  GetProductDTO,
+  ListProductsDTO,
+  SearchProductsDTO,
+  UpdateStockDTO,
+} from '../../application/use-cases/index';
 import { IProductRepository } from '../../domain/interfaces/IProductRepository';
 import { PRODUCT_TYPES } from '../../types';
 import {
@@ -24,67 +34,50 @@ export class ProductController {
 
   async createProduct(req: Request, res: Response): Promise<void> {
     try {
-      const {
-        name,
-        description,
-        type,
-        categoryId,
-        baseUnit,
-        baseQuantity,
-        fractionalUnit,
-        fractionalQuantity,
-        conversionFactor,
-        costPrice,
-        salePrice,
-        suggestedPrice,
-        ncm,
-        cest,
-        icmsRate,
-        pisRate,
-        cofinsRate,
-        origin,
-        eanCode,
-        internalCode,
-        images,
-        preparationTime,
-        minimumStock,
-        currentStock,
-        canBeIngredient,
-        needsRecipe,
-      } = req.body;
+      const createProductDTO: CreateProductDTO = {
+        name: req.body.name,
+        description: req.body.description,
+        type: req.body.type as ProductType,
+        categoryId: req.body.categoryId,
+        baseUnit: req.body.baseUnit as UnitType,
+        baseQuantity: Number(req.body.baseQuantity),
+        fractionalUnit: req.body.fractionalUnit as UnitType,
+        fractionalQuantity: req.body.fractionalQuantity
+          ? Number(req.body.fractionalQuantity)
+          : undefined,
+        conversionFactor: req.body.conversionFactor
+          ? Number(req.body.conversionFactor)
+          : undefined,
+        costPrice: Number(req.body.costPrice),
+        salePrice: Number(req.body.salePrice),
+        suggestedPrice: req.body.suggestedPrice
+          ? Number(req.body.suggestedPrice)
+          : undefined,
+        ncm: req.body.ncm,
+        cest: req.body.cest,
+        icmsRate: req.body.icmsRate ? Number(req.body.icmsRate) : undefined,
+        pisRate: req.body.pisRate ? Number(req.body.pisRate) : undefined,
+        cofinsRate: req.body.cofinsRate
+          ? Number(req.body.cofinsRate)
+          : undefined,
+        origin: req.body.origin as ProductOrigin,
+        eanCode: req.body.eanCode,
+        internalCode: req.body.internalCode,
+        images: req.body.images,
+        preparationTime: req.body.preparationTime
+          ? Number(req.body.preparationTime)
+          : undefined,
+        minimumStock: req.body.minimumStock
+          ? Number(req.body.minimumStock)
+          : undefined,
+        currentStock: req.body.currentStock
+          ? Number(req.body.currentStock)
+          : undefined,
+        canBeIngredient: Boolean(req.body.canBeIngredient),
+        needsRecipe: Boolean(req.body.needsRecipe),
+      };
 
-      const product = await this.createProductUseCase.execute({
-        name,
-        description,
-        type: type as ProductType,
-        categoryId,
-        baseUnit: baseUnit as UnitType,
-        baseQuantity: Number(baseQuantity),
-        fractionalUnit: fractionalUnit as UnitType,
-        fractionalQuantity: fractionalQuantity
-          ? Number(fractionalQuantity)
-          : undefined,
-        conversionFactor: conversionFactor
-          ? Number(conversionFactor)
-          : undefined,
-        costPrice: Number(costPrice),
-        salePrice: Number(salePrice),
-        suggestedPrice: suggestedPrice ? Number(suggestedPrice) : undefined,
-        ncm,
-        cest,
-        icmsRate: icmsRate ? Number(icmsRate) : undefined,
-        pisRate: pisRate ? Number(pisRate) : undefined,
-        cofinsRate: cofinsRate ? Number(cofinsRate) : undefined,
-        origin: origin as ProductOrigin,
-        eanCode,
-        internalCode,
-        images,
-        preparationTime: preparationTime ? Number(preparationTime) : undefined,
-        minimumStock: minimumStock ? Number(minimumStock) : undefined,
-        currentStock: currentStock ? Number(currentStock) : undefined,
-        canBeIngredient: Boolean(canBeIngredient),
-        needsRecipe: Boolean(needsRecipe),
-      });
+      const product = await this.createProductUseCase.execute(createProductDTO);
 
       res.status(201).json({
         success: true,
